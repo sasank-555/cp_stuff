@@ -36,16 +36,13 @@ LGMII = lambda: map(lambda x: int(x) - 1, input().split())
 LGLII = lambda: list(map(lambda x: int(x) - 1, input().split()))
 inf = float('inf')
 
-N,x = LII()
-nums = LII()
-def count_ways_to_sum(target_sum):
-    dp = [0] * (target_sum + 1)
-    dp[0] = 1
-
-    for num in nums:
-        for j in range(num, target_sum + 1):
-            dp[j] += dp[j - num]
-
-    return dp[target_sum]
-
-print(count_ways_to_sum(x))
+n = II()
+dp = [float('inf')] * (n + 1)
+dp[0] = 0  
+for i in range(1, n + 1):
+    for digit in str(i):
+        digit = int(digit)
+        if digit > 0:
+            dp[i] = min(dp[i], 1 + dp[i - digit])
+ 
+print(dp[n])

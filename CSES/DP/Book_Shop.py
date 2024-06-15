@@ -35,17 +35,16 @@ LII = lambda: list(map(int, input().split()))
 LGMII = lambda: map(lambda x: int(x) - 1, input().split())
 LGLII = lambda: list(map(lambda x: int(x) - 1, input().split()))
 inf = float('inf')
+n,x = LII()
+prices = LII()
+pages =LII()
+def max_pages(n, x):
+    dp = [[0] * (x + 1) for _ in range(n + 1)]
+    for i in range(1, n + 1):
+        for j in range(x + 1):            
+            dp[i][j] = dp[i-1][j]
+            if j >= prices[i-1]:
+                dp[i][j] = max(dp[i][j], dp[i-1][j-prices[i-1]] + pages[i-1])
+    return dp[n][x]
 
-N,x = LII()
-nums = LII()
-def count_ways_to_sum(target_sum):
-    dp = [0] * (target_sum + 1)
-    dp[0] = 1
-
-    for num in nums:
-        for j in range(num, target_sum + 1):
-            dp[j] += dp[j - num]
-
-    return dp[target_sum]
-
-print(count_ways_to_sum(x))
+print(max_pages(0,0))
