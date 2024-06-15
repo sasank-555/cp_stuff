@@ -38,12 +38,12 @@ inf = float('inf')
 
 N,x = LII()
 nums = LII()
-@lru_cache(None)
-def helper(i,sum):
-  if sum<0:
-    return 0
-  if i==N:
-    return int(sum==0)
-  return helper(i+1,sum)+helper(i,sum-nums[i])
-helper.cache_clear()
-print(helper(0,x))
+lru_cache(None)
+def count_ways_to_sum(i, target_sum):
+    if target_sum == 0:
+        return 1
+    if i == N or target_sum < 0:
+        return 0
+    return count_ways_to_sum(i + 1, target_sum) + count_ways_to_sum(i , target_sum - nums[i])
+
+print(count_ways_to_sum(0, x))
