@@ -36,5 +36,14 @@ LGMII = lambda: map(lambda x: int(x) - 1, input().split())
 LGLII = lambda: list(map(lambda x: int(x) - 1, input().split()))
 inf = float('inf')
 
-for _ in range(II()):
-    
+N,x = LII()
+nums = LII()
+@lru_cache(None)
+def helper(i,sum):
+  if sum<0:
+    return 0
+  if i==N:
+    return int(sum==0)
+  return helper(i+1,sum)+helper(i,sum-nums[i])
+helper.cache_clear()
+print(helper(0,x))
