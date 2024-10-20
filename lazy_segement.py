@@ -99,3 +99,5 @@ class SegmentTree:
         """
         delta = val - self.query(i, i)
         self.update_range(i, i, delta)
+
+    
