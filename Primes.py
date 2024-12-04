@@ -18,3 +18,10 @@ def getp(x):
         res.add(sp[x])
         x //= sp[x]
     return list(res)
+# prime[i]=1 ->prime else not
+primes = [1]*(MAX)
+primes[1]=primes[0] = 0
+for i in range(2,MAX):
+    if primes[i]==1:
+        for j in range(i*i,MAX,i):
+            primes[j] = 0
