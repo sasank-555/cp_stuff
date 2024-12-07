@@ -7,7 +7,7 @@ def exclusive(A, zero, combine, node):
         for i in range(n)[::-1]:
             # Propagate values down the segment tree    
             exclusiveA[i] = exclusiveA[i // 2]
-        for i in range(n & ~(bit == 0)):
+        for i in range(n & ~int(bit == 0)):
             # Fold A[i] into exclusive segment tree
             ind = (i >> bit) ^ 1
             exclusiveA[ind] = combine(exclusiveA[ind], A[i], node, i)
