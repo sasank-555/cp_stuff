@@ -37,8 +37,6 @@ LII = lambda: list(map(int, input().split()))
 LGMII = lambda: map(lambda x: int(x) - 1, input().split())
 LGLII = lambda: list(map(lambda x: int(x) - 1, input().split()))
 inf = float('inf')
-
-
 def exclusive(A, zero, combine, node):
     n = len(A)
     exclusiveA = [zero] * n # Exclusive segment tree
@@ -90,22 +88,20 @@ def rerooter(graph, default, combine, finalize = lambda nodeDP,node,eind: nodeDP
     return rootDP, forwardDP, reverseDP
 def solve():
     n = II()
-    adj = [[] for _ in range(n)]
-    mp=[[] for _ in range(n)]
-    for _ in range(n-1):
-        x,y = LGLII()
-        adj[x].append(y)
-        adj[y].append(x)
-        mp[x].append(0)
-        mp[y].append(1)
-    def combine(nodeDP,neiDP,node,eind):
-        return nodeDP + neiDP + mp[node][eind]
-    def finalize(nodeDp,node,eind):
-        return nodeDp
-    default = [0]*n
-    rootDP,_,_ = rerooter(adj,default,combine,finalize)
-    ans = min(rootDP)
-    print(ans)
-    print(*[node + 1 for node in range(n) if rootDP[node]==ans])
+    P = [int(x) - 1 for x in input().split()]
+    graph = [[] for _ in range(n)]
+    for v in range(1, n):
+        u = P[v - 1]
+        graph[u].append(v)
+        graph[v].append(u)
+
+    default = [1]*n
+    def combine(nodeDP, neiDP, node, eind):
+        return nodeDP * neiDP % MOD1
+    
+    def finalize(nodeDP, node, eind):
+        return (nodeDP + (eind != -1)) % MOD1
+    print(*rerooter(graph,default,combine,finalize)[0])
+    
 for _ in range(1):
     t  = solve()

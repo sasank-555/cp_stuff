@@ -25,3 +25,6 @@ for i in range(2,MAX):
     if primes[i]==1:
         for j in range(i*i,MAX,i):
             primes[j] = 0
+
+
+
