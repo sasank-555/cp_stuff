@@ -53,7 +53,6 @@ void solve(){
             dp[i][j] %= MOD1; 
         }
     }
-
     cout<<dp[0][0]<<endl;
 }
 
