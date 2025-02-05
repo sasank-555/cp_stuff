@@ -22,7 +22,7 @@ def find_any(a, b, c):
         return []
     x0 = x * (c // gcd)
     y0 = y * (c // gcd)
-    return [gcd, x0, y0]
+    return [x0, y0,gcd]
 
 def shift_solution(x, y, a, b, cnt):
     x += cnt * b
