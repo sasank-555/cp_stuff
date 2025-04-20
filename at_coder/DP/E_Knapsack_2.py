@@ -67,52 +67,29 @@ LII = lambda: list(map(int, input().split()))
 LGMII = lambda: map(lambda x: int(x) - 1, input().split())
 LGLII = lambda: list(map(lambda x: int(x) - 1, input().split()))
 inf = float('inf')
-class node:
-    def __init__(self):
-        self.s =  0
-        self.mxs = 0
-        self.ps = 0
-        self.ss = 0
-def combine(n1,n2,ret):
-    ret.s = n1.s + n2.s
-    ret.ps = max(n1.s + n2.ps , n1.ps)
-    ret.ss = max(n2.ss,n2.s + n1.ss)
-    ret.mxs = max(n1.mxs,n2.mxs,n1.ss + n2.ps)
-    return ret
+mxp = 100005
 def solve():
-    n,q = LII()
-    nums = LII()
-    tree = [node() for _ in range(4*n)]
-    def build(v, tl, tr):
-        if tl == tr:
-            tree[v].s = nums[tl]
-            tree[v].ps = nums[tl]  
-            tree[v].ss = nums[tl]
-            tree[v].mxs = nums[tl]
-            return
-        mid = (tl + tr) // 2
-        build(2 * v + 1, tl, mid)
-        build(2 * v + 2, mid + 1, tr)
-        combine(tree[2 * v + 1], tree[2 * v + 2],tree[v])
-    def update(v,tl,tr,i,val):
-        if tl==tr:
-            tree[v].s = val
-            tree[v].ps = val
-            tree[v].ss = val
-            tree[v].mxs = val
-            return 
-        mid = (tl + tr)//2
-        if i<=mid:
-            update(2*v + 1,tl,mid,i,val)
-        else:
-            update(2*v + 2 , mid + 1,tr,i,val)
-        combine(tree[2*v + 1], tree[2*v + 2],tree[v])
-    build(0,0,n-1)
-    for _ in range(q):
-        i,val = LII()
-        i-=1
-        update(0,0,n-1,i,val)
-        print(max(0,tree[0].mxs))
+    n, w = LII()
+    g = [LII() for _ in range(n)]
+    dp = [[inf]*mxp for _ in range(n+1)]
+    dp[0][0] = 0  # Initialize base case
+    
+    for i in range(n):
+        for p in range(mxp):
+            # Don't take item i
+            dp[i+1][p] = dp[i][p]
+            
+            # Take item i if possible
+            if p >= g[i][1]:
+                dp[i+1][p] = min(dp[i+1][p], dp[i][p - g[i][1]] + g[i][0])
+    
+    # Find maximum value that doesn't exceed weight limit
+    mx = 0
+    for p in range(mxp):
+        if dp[n][p] <= w:
+            mx = p
+            
+    print(mx)
 for _ in range(1):
     t  = solve()
     #print(t)
