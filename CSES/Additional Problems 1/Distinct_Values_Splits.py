@@ -72,35 +72,30 @@ LGLII = lambda: list(map(lambda x: int(x) - 1, input().split()))
 inf = float('inf')
 def solve():
     N = II()
-    adj  = [[] for _ in range(N)]
-    for _ in range(N -1):
-        x,y = LGLII()
-        adj[x].append(y)
-        adj[y].append(x)
-    dp =[[-1]*2 for _ in range(N)]
-    def go(node,p,t):
-        if dp[node][t]!=-1:
-            return dp[node][t]
-        if t==1:
-            ans = 0
-            for v in adj[node]:
-                if v!=p:
-                    go(v,node,0)
-                    ans+=dp[v][0]
-        else:
-            ans = 0
-            for v in adj[node]:
-                if v!=p:
-                    go(v,node,0)
-                    ans+=dp[v][0]
-            ans2 = 0
-            for v in adj[node]:
-                if v!=p:
-                    go(v,node,1)
-                    ans2 = max(ans2 , 1 + dp[v][1] + ans - dp[v][0])
-            ans = max(ans,ans2)
-        dp[node][t] = ans          
-
+    nums = LII()
+    ahh = [0]*N
+    last_occ = defaultdict(lambda : N)
+    l = N-1
+    for i in range(N-1,-1,-1):
+        l = min(l,last_occ[nums[i]] - 1)
+        ahh[i] = l
+        last_occ[nums[i]] = i
+    @lru_cache(None)
+    def go(i):
+        if i==N: return 1
+        return (f(i + 1) - f(ahh[i] + 2))%MOD1
+    @lru_cache(None)
+    def f(i):
+        if i > N:return 0
+        if i==N:return 1
+        return go(i) + f(i + 1)
+    for i in range(N,-1,-1):
+        f(i)
+        go(i)
+    r = go(0)
+    go.cache_clear()
+    f.cache_clear()
+    return r
 for _ in range(1):
     t  = solve()
     print(t)

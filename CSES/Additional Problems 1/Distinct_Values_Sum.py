@@ -72,37 +72,19 @@ LGLII = lambda: list(map(lambda x: int(x) - 1, input().split()))
 inf = float('inf')
 def solve():
     N = II()
-    adj  = [[] for _ in range(N)]
-    for _ in range(N -1):
-        x,y = LGLII()
-        adj[x].append(y)
-        adj[y].append(x)
-    dp =[[-1]*2 for _ in range(N)]
-    def go(node,p,t):
-        if dp[node][t]!=-1:
-            return dp[node][t]
-        if t==1:
-            ans = 0
-            for v in adj[node]:
-                if v!=p:
-                    go(v,node,0)
-                    ans+=dp[v][0]
-        else:
-            ans = 0
-            for v in adj[node]:
-                if v!=p:
-                    go(v,node,0)
-                    ans+=dp[v][0]
-            ans2 = 0
-            for v in adj[node]:
-                if v!=p:
-                    go(v,node,1)
-                    ans2 = max(ans2 , 1 + dp[v][1] + ans - dp[v][0])
-            ans = max(ans,ans2)
-        dp[node][t] = ans          
+    nums = LII()
+    ans = 0
+    d = defaultdict(lambda : [-1])
+    for i,x in enumerate(nums):
+        d[x].append(i)
+    for x in d.values():
+        t = x + [N]
+        for i in range(1,len(t) - 1):
+            ans+=(t[i] - t[i-1])*(N - t[i])
+    print(ans) 
 
 for _ in range(1):
     t  = solve()
-    print(t)
+    #print(t)
     #print("YES" if t else "NO")
     #print("NO" if t else "NO")

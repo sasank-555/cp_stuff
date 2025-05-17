@@ -70,39 +70,100 @@ LII = lambda: list(map(int, input().split()))
 LGMII = lambda: map(lambda x: int(x) - 1, input().split())
 LGLII = lambda: list(map(lambda x: int(x) - 1, input().split()))
 inf = float('inf')
+class SegmentTree:
+    def __init__(self, nums, fn=min):
+        self.n = len(nums)
+        self.fn = fn
+        self.tree = [0] * (4 * self.n)
+        self.build(nums, 0, 0, self.n - 1)
+
+    def build(self, nums, index, low, high):
+        if low == high:
+            self.tree[index] = nums[low]
+        else:
+            mid = (low + high) // 2
+            self.build(nums, 2 * index + 1, low, mid)
+            self.build(nums, 2 * index + 2, mid + 1, high)
+            self.tree[index] = self.fn(self.tree[2 * index + 1], self.tree[2 * index + 2])
+
+    def rangeQuery_(self, index, low, high, left, right):
+        if low >= left and high <= right:
+            return self.tree[index]
+        elif low > right or high < left:
+            if self.fn == min:
+                return float('inf')
+            elif self.fn == max:
+                return float('-inf')
+            else:
+                return 0
+        else:
+            mid = (low + high) // 2
+            l = self.rangeQuery_(2 * index + 1, low, mid, left, right)
+            r = self.rangeQuery_(2 * index + 2, mid + 1, high, left, right)
+            return self.fn(l, r)
+
+    def rangeQuery(self, left, right):
+        return self.rangeQuery_(0, 0, self.n - 1, left, right)
+
+    def update_(self, i, val, index, low, high):
+        if low == high:
+            self.tree[index] = val
+            return
+        mid = (low + high) // 2
+        if i > mid:
+            self.update_(i, val, 2 * index + 2, mid + 1, high)
+        else:
+            self.update_(i, val, 2 * index + 1, low, mid)
+        self.tree[index] = self.fn(self.tree[2 * index + 1], self.tree[2 * index + 2])
+
+    def update(self, i, val):
+        return self.update_(i, val, 0, 0, self.n - 1)
 def solve():
-    N = II()
-    adj  = [[] for _ in range(N)]
-    for _ in range(N -1):
+    N,Q = LII()
+    nums = LII()
+    adj = [[] for _ in range(N)]
+    for _ in range(N - 1):
         x,y = LGLII()
         adj[x].append(y)
         adj[y].append(x)
-    dp =[[-1]*2 for _ in range(N)]
-    def go(node,p,t):
-        if dp[node][t]!=-1:
-            return dp[node][t]
-        if t==1:
-            ans = 0
-            for v in adj[node]:
-                if v!=p:
-                    go(v,node,0)
-                    ans+=dp[v][0]
+    parent = [-1]*N
+    st = [0]
+    timer = -1
+    intime = [0]*N
+    outtime = [0]*N
+    vals = [0]*(2*N)
+    while st:
+        u = st.pop()
+        if u>=0:
+            timer+=1
+            intime[u] = timer
+            vals[timer] = nums[u]
+            st.append(~u)
+            for v in adj[u]:
+                if v!=parent[u]:
+                    st.append(v)
+                    parent[v]  = u
         else:
-            ans = 0
-            for v in adj[node]:
-                if v!=p:
-                    go(v,node,0)
-                    ans+=dp[v][0]
-            ans2 = 0
-            for v in adj[node]:
-                if v!=p:
-                    go(v,node,1)
-                    ans2 = max(ans2 , 1 + dp[v][1] + ans - dp[v][0])
-            ans = max(ans,ans2)
-        dp[node][t] = ans          
-
+            u = ~u
+            timer+=1
+            # vals[timer] = -nums[u]
+            outtime[u]  = timer
+            
+    # print(vals)
+    # print(intime,outtime)
+    st = SegmentTree(vals,fn = lambda x,y : x + y)
+    for _ in range(Q):
+        ahh = LII()
+        if ahh[0]==1:
+            idx = intime[ahh[1] - 1]
+            st.update(idx,ahh[2])
+        else:
+            l = intime[ahh[1] - 1]
+            r = outtime[ahh[1]  - 1]
+            # print(l,r)
+            print(st.rangeQuery(l,r))
 for _ in range(1):
     t  = solve()
-    print(t)
+    #print(t)
     #print("YES" if t else "NO")
     #print("NO" if t else "NO")
