@@ -47,3 +47,16 @@ def rerooter(graph, default, combine, finalize = lambda nodeDP,node,eind: nodeDP
         for nei, dp in zip(graph[node], reverseDP[node]):
             DP[nei] = dp
     return rootDP, forwardDP, reverseDP
+
+    def combine(nodeDP, neiDP, node, eind):
+        nodeCost, nodeSz = nodeDP
+        childCost, childSz = neiDP
+        child = graph[node][eind]
+        w = A[node] ^ A[child]
+        nodeCost += childCost + w * childSz
+        nodeSz   += childSz
+        return (nodeCost, nodeSz)
+
+    def finalize(nodeDP, node, eind):
+        return nodeDP
+
