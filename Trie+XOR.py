@@ -45,4 +45,24 @@ class Trie:
             else:
                 break
 
+    # count x^y < k
+    def count(self,x,k):
+        curr = self.root
+        ans  = 0
+        for i in range(31,-1,-1):
+            kb = 1 if k&(1<<i) else 0
+            xb = 1 if x&(1<<i) else 0
+            if kb==1:
+                # yb can be same as xb
+                if xb in curr.child:
+                    ans+=curr.child[xb].count
+                if 1- xb not in curr.child:
+                    break
+                curr = curr.child[1 - xb]
+            else:
+                if xb not in curr.child:
+                    break
+                curr = curr.child[xb]
+        return ans
+
 
