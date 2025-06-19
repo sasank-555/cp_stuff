@@ -1,6 +1,9 @@
-########################################################################################################################
-# -----------------------------------------------AUTHOR: shank_555-----------------------------------------------------#
-########################################################################################################################
+# ███████╗ █████╗ ███████╗ █████╗ ███╗   ██╗██╗  ██╗
+# ██╔════╝██╔══██╗██╔════╝██╔══██╗████╗  ██║██║ ██╔╝
+# ███████╗███████║███████╗███████║██╔██╗ ██║█████╔╝ 
+# ╚════██║██╔══██║╚════██║██╔══██║██║╚██╗██║██╔═██╗ 
+# ███████║██║  ██║███████║██║  ██║██║ ╚████║██║  ██╗
+# ╚══════╝╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝╚═╝  ╚═══╝╚═╝  ╚═╝                                       
 import time
 from bisect import bisect_left,bisect_right
 import functools
@@ -68,38 +71,47 @@ LGMII = lambda: map(lambda x: int(x) - 1, input().split())
 LGLII = lambda: list(map(lambda x: int(x) - 1, input().split()))
 inf = float('inf')
 def solve():
-    n ,q = LII()
-    nums = LII()    
-    tree  =[0]*(n + 1)
-    def update(i,dx):
+    N,q = LII()
+    nums = LII()
+    d = defaultdict(list)
+    for i,x in enumerate(nums):d[x].append(i)
+    for i,x in enumerate(nums):
+        j = bisect_right(d[x],i)
+        if j==len(d[x]):
+            nums[i] = N + 1
+        else:
+            nums[i] =  d[x][j]  +  1
+    queries = [LII() for _ in range(q)]
+    for i in range(q):
+        queries[i].append(i)
+    queries.sort(key = lambda x : -x[1])
+    nums = sorted([[x,i] for i,x in enumerate(nums)])
+    tree = [0]*(N + 1)
+    def update(i):
         i+=1
-        while i < len(tree):
-            tree[i]+=dx
-            i+= (i & -i)
+        while i<len(tree):
+            tree[i]+=1
+            i+=(i & -i)
     def query(i):
         i+=1
-        ret  = 0
+        ret = 0
         while i > 0:
             ret+=tree[i]
-            i-=(-i & i)
+            i-=(i & -i)
         return ret
-    d = defaultdict(list)
-    for i in range(q):
-        l,r = LGLII()
-        d[l].append([r,i])
-    last_val = {}
-    ans = [-1]*(q)
-    for i in range(n-1,-1,-1):
-        val = nums[i]
-        if val in last_val:
-            update(last_val[val],-1)
-        last_val[val] = i
-        update(i,1)
-        for r,j in d[i]:
-            ans[j] = query(r)
+    j = len(nums) - 1
+    ans = [0]*(q)
+    # print(nums)
+    # print(queries)
+    for l,r,i in queries:
+        while j>=0 and nums[j][0] > r:
+            update(nums[j][1])
+            j-=1
+        r-=1
+        l-=1
+        ans[i] = query(r) - query(l-1)
     for x in ans:
         print(x)
-
 for _ in range(1):
     t  = solve()
     #print(t)
