@@ -1,4 +1,4 @@
-# hmm u can u class if u want
+# hmm u can use class if u want
 n = 200
 tree = [0]*(n + 1) # one based index
 # sum upto i
